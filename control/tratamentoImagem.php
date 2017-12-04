@@ -1,6 +1,4 @@
 <?php
-
-
 tratamentoImagem();
 
 function tratamentoImagem(){
@@ -10,7 +8,7 @@ function tratamentoImagem(){
 
 
     //Caminho absoluto
-    $uploaddir = $_SERVER['DOCUMENT_ROOT']."/DPI_Project/img/";
+    $uploaddir = $_SERVER['DOCUMENT_ROOT']."/I_Project/img/";
     //Nome que veio
     $nome = basename($_FILES['userfile']['name']);
     //Caminho+nome
@@ -18,11 +16,12 @@ function tratamentoImagem(){
 
     if (!file_exists($_FILES['userfile']['tmp_name']) || !is_uploaded_file($_FILES['userfile']['tmp_name'])) {
         echo "Erro ao fazer upload de imagem";
-        locale_accept_from_http("../view/index.php");
     } else {
-        if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
+        
+
+        if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)){
+
             $path = $uploadfile;
-            $img = 0;
             switch ($tipoImagem){
 
                 case 1:
