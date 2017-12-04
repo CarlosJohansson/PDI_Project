@@ -45,33 +45,70 @@ function tratamentoImagem(){
                     break;
             }
 
+
+            if($img && imagefilter($img,IMG_FILTER_GRAYSCALE))
+            {
+                echo 'Conversão escala de cinza!<br/>';
+                imagepng($img, $uploaddir."1_".$nomeImagem."_EscalaCinza_".$extensao);
+            }
+            else
+            {
+                echo 'Conversão falhou!!!';
+            }
+
             $width = imagesx($img);
             $height = imagesy($img);
+            $maiorCor = 0;
+            $menorCor = 255;
 
             for ($i=0; $i < $width; $i++ ){
                 for ($j=0; $j < $height; $j++ ) {
 
-                    $color = imagecolorat($img, $i, $j);
-                    echo $color; exit;
-                    if ($color >= 120){
-                        imagesetpixel($img, $i, $j, 0);
-                    }else{
-                        imagesetpixel($img, $i, $j, 1);
+                    $corAtual = imagecolorat($img, $i, $j);
+
+                    if ($corAtual > $maiorCor){
+                        $maiorCor = $corAtual;
+                    }
+                    if ($corAtual < $menorCor){
+                        $menorCor = $corAtual;
                     }
                 }
             }
-            imagepng($img, $uploaddir.$nomeImagem."binarizada".$extensao);
 
-            if($img && imagefilter($img,IMG_FILTER_EDGEDETECT))
+            for ($i=0; $i < $width; $i++ ){
+                for ($j=0; $j < $height; $j++ ) {
+                    $corDoPixel = imagecolorat($img, $i, $j);
+
+                    $novaCor = round((($corDoPixel-$menorCor)/($maiorCor-$menorCor))*(256-1));
+                    imagesetpixel($img, $i, $j, $novaCor);
+                }
+            }
+
+            imagepng($img, $uploaddir."2_".$nomeImagem."_Equalizada_".$extensao);
+            echo "Equalização <br/>";
+
+
+            for ($i=0; $i < $width; $i++ ){
+                for ($j=0; $j < $height; $j++ ) {
+                    $color = imagecolorat($img, $i, $j);
+                    if ($color >= 120){
+                        imagesetpixel($img, $i, $j, 0);
+                    }else{
+                        if ($color <= 120){
+                            imagesetpixel($img, $i, $j, 255);
+                        }
+                    }
+                }
+            }
+            imagepng($img, $uploaddir."3_".$nomeImagem."_Binarizada_".$extensao);
+            echo "Binarização concluida <br/>";
+
+            if($img && imagefilter($img,IMG_FILTER_EDGEDETECT ))
             {
-                echo 'Detecção de borda completa!';
+                echo 'Detecção de borda completa!<br/>';
 
-                imagepng($img, $uploaddir.$nomeImagem.$extensao);
+                imagepng($img, $uploaddir."4_".$nomeImagem."_Detecção de borda_".$extensao);
 
-
-
-//                if ($img && imagefilter($img, IMG_FILTER_EDGEDETECT)){
-//                }
             }
             else
             {
