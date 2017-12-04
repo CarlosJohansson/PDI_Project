@@ -22,7 +22,7 @@ function tratamentoImagem(){
     } else {
         if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
             $path = $uploadfile;
-
+            $img = 0;
             switch ($tipoImagem){
 
                 case 1:
