@@ -8,7 +8,7 @@ function tratamentoImagem(){
 
 
     //Caminho absoluto
-    $uploaddir = $_SERVER['DOCUMENT_ROOT']."/I_Project/img/";
+    $uploaddir = $_SERVER['DOCUMENT_ROOT']."/PDI_Project/img/";
     //Nome que veio
     $nome = basename($_FILES['userfile']['name']);
     //Caminho+nome
@@ -23,7 +23,6 @@ function tratamentoImagem(){
 
             $path = $uploadfile;
             switch ($tipoImagem){
-
                 case 1:
                     $img = imagecreatefromjpeg($path);
                     $extensao = ".jpg";
@@ -41,12 +40,38 @@ function tratamentoImagem(){
                     $extensao = ".bmp";
                     break;
 
+                default:
+                    exit;
+                    break;
             }
-            if($img && imagefilter($img, IMG_FILTER_EDGEDETECT))
+
+            $width = imagesx($img);
+            $height = imagesy($img);
+
+            for ($i=0; $i < $width; $i++ ){
+                for ($j=0; $j < $height; $j++ ) {
+
+                    $color = imagecolorat($img, $i, $j);
+                    echo $color; exit;
+                    if ($color >= 120){
+                        imagesetpixel($img, $i, $j, 0);
+                    }else{
+                        imagesetpixel($img, $i, $j, 1);
+                    }
+                }
+            }
+            imagepng($img, $uploaddir.$nomeImagem."binarizada".$extensao);
+
+            if($img && imagefilter($img,IMG_FILTER_EDGEDETECT))
             {
-                echo 'Imagem convertida para grayscale';
+                echo 'Detecção de borda completa!';
 
                 imagepng($img, $uploaddir.$nomeImagem.$extensao);
+
+
+
+//                if ($img && imagefilter($img, IMG_FILTER_EDGEDETECT)){
+//                }
             }
             else
             {
